@@ -1,0 +1,58 @@
+{
+  "name": "storytime",
+  "displayName": "Storytime",
+  "publisher": "Ale1",
+  "description": "story log viewer and debugger",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.106.1"
+  },
+  "categories": [
+    "Debuggers", "Other"
+  ],
+  "icon": "images/Chicken_Claw.png",
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "storytime.openfiles",
+        "title": "storytime: open story files"
+      },
+      {
+        "command": "storytime.refreshHighlights",
+        "title": "storytime: refresh highlights"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "storytime.openfiles",
+          "group": "story tools"
+        },
+        {
+          "command": "storytime.refreshHighlights",
+          "group": "story tools"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.106.1",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "typescript-eslint": "^8.46.3",
+    "eslint": "^9.39.1",
+    "typescript": "^5.9.3",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2"
+  }
+}

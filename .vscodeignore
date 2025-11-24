@@ -1,0 +1,37 @@
+.vscode/**
+.vscode-test/**
+.yarnrc
+vsc-extension-quickstart.md
+**/tsconfig.json
+**/eslint.config.mjs
+**/*.map
+**/*.ts
+**/.vscode-test.*
+
+
+# Git & VS Code config
+.git
+.gitignore
+.gitattributes
+.vscode/
+
+# Logs & temp
+*.log
+temp/
+*.tsbuildinfo
+
+# Source code not needed in package
+src/
+test/
+**/*.spec.js
+**/*.spec.ts
+**/*.test.js
+**/*.test.ts
+
+# Node modules (exclude everything except runtime deps)
+node_modules/
+!node_modules/your-runtime-dependency/**
+
+# Local environment files
+*.env
+*.local
