@@ -3,7 +3,7 @@
   "displayName": "Storytime",
   "publisher": "Ale1",
   "description": "story log viewer and debugger",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.106.1"
   },
@@ -18,10 +18,6 @@
       {
         "command": "storytime.openfiles",
         "title": "storytime: open story files"
-      },
-      {
-        "command": "storytime.refreshHighlights",
-        "title": "storytime: refresh highlights"
       }
     ],
     "menus": {
@@ -35,7 +31,15 @@
           "group": "story tools"
         }
       ]
-    }
+    },
+    "languages": [
+      {
+        "id": "storytimePlaintext",
+        "aliases": ["Storytime Plain Text"],
+        "filenames":[],
+        "scheme": "storytime"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
