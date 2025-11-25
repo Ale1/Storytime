@@ -3,50 +3,57 @@ import { highlightDecoration } from './decorations';
 
 export class PageNumberCodeLensProvider implements vscode.CodeLensProvider {
     private regex = /\bat line (\d+)\b/gi;
-    private offsets = new Map<string, number>();
+
+    private _onDidChange = new vscode.EventEmitter<void>();
+    public readonly onDidChangeCodeLenses = this._onDidChange.event;
 
     constructor(private storyEditor: vscode.TextEditor | null) {}
 
     provideCodeLenses(document: vscode.TextDocument): vscode.CodeLens[] {
-        
-        if (!document.fileName.endsWith('.log')) {
-            return []; // skip .div files
+        if (!document.uri.path.endsWith('.log')) {
+            return [];
         }
-        
+
+        if (!this.storyEditor) {return [];};
+
         const codeLenses: vscode.CodeLens[] = [];
         const decorations: vscode.DecorationOptions[] = [];
-    
-      // Only scan from last offset for incremental updates
-        const lastOffset = this.offsets.get(document.uri.toString()) ?? 0;
-        const text = document.getText().slice(lastOffset);
 
-        let match;
-        while ((match = this.regex.exec(text)) !== null) {
-            const start = document.positionAt(match.index + lastOffset);
-            const end = document.positionAt(match.index + lastOffset + match[0].length);
-            const range = new vscode.Range(start, end);
+        // Get the visible range(s) of the editor
+        const visibleRanges = this.storyEditor.visibleRanges;
+        for (const range of visibleRanges) {
+            const startOffset = document.offsetAt(range.start);
+            const endOffset = document.offsetAt(range.end);
+            const text = document.getText().slice(startOffset, endOffset);
 
-            codeLenses.push(new vscode.CodeLens(range, {
-                title: 'Go to story line',
-                command: 'storytime.goToStoryLine',
-                arguments: [parseInt(match[1], 10), this.storyEditor]
-            }));
+            let match;
+            while ((match = this.regex.exec(text)) !== null) {
+                const start = document.positionAt(match.index + startOffset);
+                const end = document.positionAt(match.index + startOffset + match[0].length);
+                const codeLensRange = new vscode.Range(start, end);
 
-            decorations.push({ range });
+                codeLenses.push(new vscode.CodeLens(codeLensRange, {
+                    title: 'Go to story line',
+                    command: 'storytime.goToStoryLine',
+                    arguments: [parseInt(match[1], 10), this.storyEditor]
+                }));
+
+                decorations.push({ range: codeLensRange });
+            }
         }
 
-         // Update offset
-        this.offsets.set(document.uri.toString(), document.getText().length);
-
         // Apply decorations
-        if (vscode.window.activeTextEditor) {
-            vscode.window.activeTextEditor.setDecorations(highlightDecoration, decorations);
+        if(this.storyEditor)
+        {
+            this.storyEditor.setDecorations(highlightDecoration, decorations);
         }
 
         return codeLenses;
     }
-    
-    reset(document: vscode.TextDocument) {
-        this.offsets.set(document.uri.toString(), 0);
+
+    private refreshTimeout: NodeJS.Timeout | undefined;
+    public refresh() {
+         if (this.refreshTimeout) {clearTimeout(this.refreshTimeout);};
+        this.refreshTimeout = setTimeout(() => this._onDidChange.fire(), 100);
     }
 }

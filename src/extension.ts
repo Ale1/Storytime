@@ -74,6 +74,8 @@ const openFilesCommand = vscode.commands.registerCommand('storytime.openfiles', 
     const divDoc = await vscode.workspace.openTextDocument(virtualDivUri);
     const logDoc = await vscode.workspace.openTextDocument(virtualLogUri);
 
+
+
     const editor1 = await vscode.window.showTextDocument(divDoc, {
         viewColumn: vscode.ViewColumn.One,
         preview: false
@@ -84,21 +86,24 @@ const openFilesCommand = vscode.commands.registerCommand('storytime.openfiles', 
         preview: false
     });
 
+	console.log(logDoc.uri.scheme, logDoc.languageId);
+
     storyLog = editor2;
 
     const provider = new PageNumberCodeLensProvider(storyLog);
-    vscode.languages.registerCodeLensProvider( { scheme: "storytime", language: "plaintext" }, provider);
+    vscode.languages.registerCodeLensProvider( { scheme: "storytime", language: "log" }, provider);
 
     storyVirtualProvider.onDidChange(uri => {
 		const doc = vscode.workspace.textDocuments.find(d => d.uri.toString() === uri.toString());
 		if (doc) {
-			vscode.commands.executeCommand('editor.action.codeLensRefresh', doc.uri);
+			provider.refresh();
 		}
     });
 });
 	//#endregion
 
 
+	
     //#region COMMAND 2 : GO TO STORY LINE
     const goToStoryLineCommand = vscode.commands.registerCommand('storytime.goToStoryLine',
         (lineNumber: number, editor: vscode.TextEditor | null) => {

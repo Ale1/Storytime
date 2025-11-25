@@ -25,19 +25,15 @@
         {
           "command": "storytime.openfiles",
           "group": "story tools"
-        },
-        {
-          "command": "storytime.refreshHighlights",
-          "group": "story tools"
         }
       ]
     },
     "languages": [
       {
-        "id": "storytimePlaintext",
-        "aliases": ["Storytime Plain Text"],
-        "filenames":[],
-        "scheme": "storytime"
+        "id": "log",
+        "aliases": ["Log"],
+        "extensions":[".log"],
+        "configuration":""
       }
     ]
   },
